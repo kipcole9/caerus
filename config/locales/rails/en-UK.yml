@@ -1,0 +1,8 @@
+en-UK:
+
+# Used in array.to_sentence.
+  support:
+    number:
+      # Used in number_to_currency()
+      currency:
+          unit: "£"

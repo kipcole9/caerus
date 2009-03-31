@@ -1,0 +1,82 @@
+en-US:
+    must_login:             You must login to access this page.
+    cancel:                 Cancel
+    help:                   Help
+    my_settings:            Settings
+    account_settings:       Account
+    or:                     or
+    site_name:              caerus.com
+    user_login:             Log in to your account
+    login:                  Login
+    remember_me:            Remember me
+    save:                   Save your changes
+    now:                    Now
+    next_month:             Next Month
+    next_quarter:           Next Quarter
+    
+    panels:
+        edit_contact:       Update this contact's information
+        new_contact:        Create a new contact
+        contacts_index:     Contacts
+        emails_opened:      Emails opened
+        emails_clicked:     Emails clicked
+        emails_summary:     Emails summary
+    
+    
+    column_descriptions:
+        email:              "This is the email address for any account-related correspondance. You can change it at any time."
+        login:              "This is the name you will use to log in to the system and to administer your account. <em>It can't be changed later</em>."
+        password:           "Your password for this site.  Keep it secure."
+        locale:             "Your preferred language, which can be changed at any time"
+        timezone:           "The time zone in which you, personally, mostly work. You can change at any time."
+        account:
+            name:           "You'll access your own <em>secure &amp; private</em> system using this account name.  It can be anything you like, as long as it is comprised of <em>letters</em>, <em>numbers</em> or <em>'-'</em> (a dash)."
+
+    email_types:            [["Work", "work"], ["Personal", "personal"], ["Other", "other"]]
+    website_types:          [["Work", "work"], ["Personal", "personal"], ["Other", "other"]]
+    phone_types:            [["Work", "direct"], ["Home", "home"], ["Mobile", "mobile"], 
+                            ["Skype", "skype"], ["Main", "main"], ["Fax", "fax"], 
+                            ["Pager", "pager"], ["Other", "other"]]
+                
+    accounts:
+        new_account:
+            banner:             "You're 60 seconds from forecast control!"
+            signup:             This is all you need for a new account
+            user_info:          'About you:'
+            account_info:       'About your new account:'
+            preferences:        'Your personal preferences:'
+            request_login_info: 'Your login information:'
+            submit_sign_up:     'Accept terms and create account'
+            created:            'Your new account has been created'
+            creation_error:     'Your account could not be created due to the following errors:'
+        settings:
+            update_calendar:    'Update calendar'
+        edit_account:
+            heading:            'Edit your account settings'
+                
+    activerecord:
+        # This is where we translate our model and attribute names
+        models:
+            website:            Web Sites
+            contact:            Contacts
+            email:              Email addresses
+        attributes:
+            account:
+                name:           Account name
+                company_name:   Company name
+                timezone:       Time zone
+            user:
+                login:          User name
+                password_confirmation:  Password again
+                email:          E-mail
+                timezone:       Time Zone
+                locale:         Preferred Language
+            email:
+                address:        Address
+            website:
+                url:            Address
+            track:
+                ip_address:     IP Address    
+                
+                
+                

@@ -1,0 +1,167 @@
+/* Specific css for things out of the normal template flow */
+.container_12 {
+	min-width: 860px;
+}
+
+/* New account setup, selecting a sitename */
+div.sitename {
+	margin-top: -10px;
+	margin-left: 2px;
+}
+
+div.sitename + .prompt, div.sitename div.fieldWithErrors .prompt {
+	margin-top: 3px;
+}
+
+div.sitename div.fieldWithErrors {
+	display: inline;
+	position: relative;
+	top: 0px;
+}
+
+/* branding
+----------------------------------------------- */
+h1#branding {
+	font-weight:normal;
+	font-size:2em;
+	text-align:left;
+	background:#aaa;
+	padding:.5em;
+	margin-bottom:0;
+}
+
+
+/* page heading
+----------------------------------------------- */
+h2#page-heading {
+	font-weight:normal;
+	font-size: 1.5em;
+	padding:.5em;
+	margin:0 0 10px 0;
+	border-bottom:1px solid #ccc;
+}
+
+h1#branding, h2#page-heading {
+	padding-left: 11px;
+}
+
+
+/* The field error message from validations */
+span.field_message {
+	margin-left: 3px;
+	color: #f00;
+}
+
+/* Field prompts under the input field */
+p.prompt {
+	margin-top: -0.9em;
+	margin-left: 1px;
+	line-height: 1.1em;
+}
+
+/* Form sections */
+form {
+	position: relative;
+}
+
+form .section_left {
+	position: relative;
+	float: left;
+	width: 48%;
+	/* border-right: 1px dotted black; */
+	padding-right: 10px;
+}
+
+form .section_right {
+	position: relative;
+	float: left;
+	width: 48%;
+	padding-left: 10px;
+}
+
+/* Submit button combo */
+form .submit_button {
+	position: absolute;
+	bottom: 0.4em;
+	right: 0px;
+}
+
+/* Help boxes */
+div.help dl {
+	margin-bottom: 5px;
+}
+
+div.help h2 a {
+	background-color: #777;
+}
+
+/* Signup banner */
+h1.signup {
+	text-align: center;
+	font-size: 4em;
+	line-height: 1.5em;
+	color: red;
+	margin-bottom: 30px;
+}
+
+
+legend {
+	padding:.2em .8em;
+}
+
+/* The add button in fieldsets that represent
+AR associated relations */
+legend img, img.delete {
+	position: relative;
+}
+
+legend img {
+	top: 0.25em;
+	left: 0.4em;
+}
+
+img.delete {
+	left: 0.1em;
+	top: 0.35em;
+}
+
+/* To provide some spacing below the form contents
+to allow for the submit and cancel buttons */
+form {
+	padding-bottom: 2em;
+	margin-bottom: 0.2em;
+}
+
+/* For forms in the sidebar that are for search, etc */
+form.search {
+	padding: 0;
+	margin: 0;
+}
+
+/* Forms inline display */
+div.inline p, div.inline label, div.inline input, div.inline select, div.inline .fieldWithErrors {
+	display: inline;
+}
+
+div.inline .fieldWithErrors {
+	top: 0;
+}
+div.inline input {
+	margin-right: 5px;
+}
+
+div.inline {
+	margin-bottom: 6px;
+}
+
+div.inline label {
+	margin-right: 3px;
+}
+
+div.inline + div.inline label {
+	color: #aaa;
+}
+
+div.inline label {
+	margin-right: 0.4em;
+}

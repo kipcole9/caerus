@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+    <%= render "widgets/head" %>				
+	</head>
+	<body>
+		<div class="container_12">
+			<!-- header elements -->
+			<%= render "widgets/header" %>
+
+			<!-- Center Column -->
+			<div id="left" class="grid_6 prefix_3 suffix_3">
+				<%= yield %>
+			</div>
+
+			<div class="clear"></div>
+			
+			<!-- Footer -->
+			<div id="footer" class="grid_12 site_info">
+				<%= render "widgets/footer" %>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</body>
+</html>
