@@ -1,5 +1,5 @@
 # Create and edit a contact
-panel 'panels.edit_contact' do
+panel 'panels.edit_contact', :flash => true do
   block do
     store error_messages_for :contact
     caerus_form_for initialize_contact(@contact), :html => { :multipart => true }  do |contact|

@@ -165,3 +165,26 @@ div.inline + div.inline label {
 div.inline label {
 	margin-right: 0.4em;
 }
+
+/* Flash */
+div.flash_notice, div.flash_error {
+	padding: 5px;
+	margin-top: 5px;
+	margin-bottom: -3px;
+	background-color: #bfb;
+	border: 1px solid #999;
+}
+
+div.flash_notice img, div.flash_error img {
+	position: relative;
+	top: 0.25em;
+}
+
+div.flash_error {
+	background-color: #fbb;
+}
+
+/* Menu transparency */
+ul.main li ul {
+  opacity: 0.9;
+}

@@ -17,6 +17,7 @@ class ApplicationController < ActionController::Base
   before_filter     :set_timezone
   before_filter     :set_calendar
 
+  layout            'application', :except => [:rss, :xml, :json, :atom, :vcf, :xls, :csv, :pdf]
 
   def subdomains_allowed?
     # Overwritten in descendant classes if required.

@@ -1,10 +1,9 @@
 clear do
-  column :width => 8 do
-    include 'emails_opened'
-    include 'emails_clicked'
+  column :width => 12 do
+    panel 'panels.chart_1', :flash => true do
+      block do
+        store @tracks.to_table
+      end
+    end
   end
-  
-  column :width => 4 do
-    include "emails_summary"
-	end
 end

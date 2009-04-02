@@ -19,7 +19,7 @@ class Track < ActiveRecord::Base
     :conditions => "outbound = 0 and url IS NOT NULL"
   
   named_scope :visitors,
-    :select => "UNIQUE visitor", :conditions => "visitor IS NOT NULL"
+    :select => "DISTINCT visitor", :conditions => "visitor IS NOT NULL"
   
   # non-null duration identifies unique visits
   named_scope :visits,
@@ -29,14 +29,24 @@ class Track < ActiveRecord::Base
   named_scope :new_visitors,
     :conditions => "visit = 1 AND duration IS NOT NULL" 
   
+  # Visitors who have visited more than once in the current period
+  # Without further scoping this is meaningless - but the #between scope
+  # needs to see this first
+  named_scope :repeat_visitors,
+    :conditions => "previous_session IS NOT NULL AND duration IS NOT NULL", 
+    :group => :visitor
+    
+  named_scope :repeat_visits,
+    :conditions => "previous_session IS NOT NULL AND duration IS NOT NULL"
+  
   # Visitors who visited before the current period and have now returned
   named_scope :return_visitors,
-    :conditions => "visit > 1 AND duration IS NOT NULL"
-  
-  # Visitors who have visited more than once in the current period
-  named_scope :repeat_visitors, 
-    {:conditions => "visit > 1 AND duration IS NOT NULL AND previous_session IS NOT NULL"}
-  
+    :conditions => "visit > 1 AND previous_session IS NOT NULL AND duration IS NOT NULL", 
+    :group => :visitor
+    
+  named_scope :return_visits,   
+    :conditions => "visit > 1 AND previous_session IS NOT NULL AND duration IS NOT NULL"
+      
   named_scope :entry_pages,
     :conditions => "view = 1 and url IS NOT NULL"
 
@@ -63,16 +73,29 @@ class Track < ActiveRecord::Base
   named_scope :clicked_emails,
     :conditions => "campaign_name IS NOT NULL and campaign_medium = 'email' AND campaign_source = 'landing'"
     
-  named_scope :between, lambda {|range|
-    repeat_visitors.send("proxy_options=", {:test => 'test'})
-    puts repeat_visitors.proxy_options.inspect
-    {:conditions => {:tracked_at => range} }
+  named_scope :between, lambda {|*args|
+    return {} unless args.last
+    range = args.last
+    this_scope = "tracked_at BETWEEN '#{range.first.to_s(:db)}' AND '#{range.last.to_s(:db)}'"
+    parent_scope = self.scoped_methods.last[:find]
+    if parent_scope == self.repeat_visitors.proxy_options ||
+       parent_scope == self.repeat_visits.proxy_options
+      this_scope += " AND previous_session > '#{range.first.to_s(:db)}'"
+    end
+    if parent_scope == self.return_visitors.proxy_options ||
+       parent_scope == self.return_visits.proxy_options
+      this_scope += " AND previous_session < '#{range.first.to_s(:db)}'"
+    end
+    {:conditions => this_scope}
   }
  
   named_scope :by, lambda {|*args|
+    return {} unless args.last
+    args = args.last.flatten if args.last.is_a?(Array)
+    
     # Args are passed as SELECT and GROUP clauses
     # with special attention paid to :day, :month, :year, :hour
-    # configurations because the manipulate the #tracked_at formation
+    # configurations because they manipulate the #tracked_at formation
     #
     # Note that this also controls the grouping since we add each
     # argument to both the SELECT and GROUP.  This simplifies reporting
@@ -82,7 +105,7 @@ class Track < ActiveRecord::Base
     select = []
     group = []
     args.each do |a|
-      case a
+      case a.to_sym
       when :day
         select << "date(tracked_at) as tracked_at"
         group << "date(tracked_at)"
@@ -133,6 +156,13 @@ class Track < ActiveRecord::Base
     {:conditions => {:campaign_medium => method}}
   } 
   
+  NON_METRIC_KEYS    = [:scoped, :source, :between, :by, :duration, :campaign, :medium]
+  def self.available_metrics
+    @@available_metrics = nil unless defined?(@@available_metrics)
+    return  @@available_metrics || 
+            @@available_metrics = self.scopes.keys.reject!{|k| NON_METRIC_KEYS.include? k }.map(&:to_s)
+  end
+  
   # Visitor may have several parts when imported from the tracking system
   # => 0: Visitor id
   # => 1: Number of visits
@@ -141,14 +171,16 @@ class Track < ActiveRecord::Base
   def visitor=(v)
     return if v.blank?
     parts = v.split('.')
-    raise "Track: Badly formed visitor variable: '#{s}" if parts.size > 4
+    raise "Track: Badly formed visitor variable: '#{v}" if parts.size > 4
     self.write_attribute('visitor', parts[0])
-    RAILS_DEFAULT_LOGGER.debug "Visitor #{parts[0]} with visit #{parts[1]}"
     self.visit = parts[1] if parts[1]
     parts[3] = parts[3].to_i / 1000 if parts[3] && parts[3].to_i.is_a?(Bignum)
     self.previous_session = Time.at(parts[3].to_i) if parts[3]
   end
   
+  # Session has two possible parts
+  # => Session id (a timestamp)
+  # => A pageview count incremented on each pageview for this session
   def session=(s)
     return if s.blank?
     parts = s.split('.')

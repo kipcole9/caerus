@@ -14,6 +14,10 @@ ActionController::Routing::Routes.draw do |map|
   map.resource  :welcomes, :member => {:new_account => :get}
   map.resource  :session
   map.resource  :dashboard
+  
+  # For analytics display
+  map.connect   '/tracks/show', :controller => 'tracks', :action => 'show'
+  map.trcaks    '/tracks/:metric.:format', :controller => 'tracks', :action => 'index'
 
   # The priority is based upon order of creation: first created -> highest priority.
 

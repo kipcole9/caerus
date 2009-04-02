@@ -66,6 +66,21 @@ module ApplicationHelper
     I18n.t(title, :default => title)
   end
   
+  # Render the flash
+  def display_flash
+    if flash[:error]
+      with_tag(:div, :class => "box flash_error") do
+        store image_tag "/images/icons/exclamation.png"
+        store flash[:error]
+      end
+    elsif flash[:notice]
+      with_tag(:div, :class => "box flash_notice") do
+        store image_tag "/images/icons/accept.png"
+        store flash[:notice]
+      end   
+    end
+  end
+  
   # Get a list of time zones that are in the same UTC offset
   # as the supplied zone.  Takes a TimeZone instance or a number
   def time_zones_like(time_zone)

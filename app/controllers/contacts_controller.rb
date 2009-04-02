@@ -12,8 +12,13 @@ class ContactsController < ApplicationController
   end
 
   def update
-    @contact.update_attributes(params[:contact]) ?
-      redirect_to(contact_path(@contact)) : render(:action => :edit)
+    if @contact.update_attributes(params[:contact]) 
+      flash[:notice] =  "Contact updated sucessfully."
+      redirect_to(contact_path(@contact))
+    else
+      flash[:error] =  "Contact could not be updated."  
+      render(:action => :edit)
+    end
   end
   
 private

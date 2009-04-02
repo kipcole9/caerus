@@ -1,5 +1,5 @@
 <h1 class="signup">
-  <a id="test" href="<%= new_account_path %>">Sign up now!</a>
+  <a id="test" href="<%= new_account_url %>">Sign up now!</a>
 </h1>
   
 <div id="c1" class="grid_3">
@@ -19,10 +19,9 @@
 </div>
 <div class="clear"</div>
 
-<%= javascript_include_tag 'tracker.js' %>
+<%= javascript_include_tag 'tracker_debug.js' %>
 <script type="text/javascript">
 var tracker = new _tks;
-tracker.setAccount('tks-123456-1');
+tracker.setAccount('tks-12345-1');
 tracker.trackLink('test');
-tracker.trackPageview();
 </script>

@@ -1,6 +1,5 @@
 class AccountsController < ApplicationController
   before_filter     :retrieve_account, :except => [:new, :create]
-  layout "new_account"
   
   def new
     @account = Account.new

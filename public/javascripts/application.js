@@ -117,8 +117,23 @@ Event.addBehavior({
 		};
 		
 		setupValidations();
+		reorderInlineFieldMessages();
 	}
 });
+
+// When a form is "inline" we want the field message (used for validation)
+// to be moved to the end of the enclosing div. That allows us to
+// position the message better.
+function reorderInlineFieldMessages() {
+	var fieldList = $$('div.inline span.field_message');
+	fieldList.each(
+		function(i, n) {
+			parent = i.up().up();
+			element = i.remove();
+			parent.insert(i);
+		}
+	);
+};
 
 function setupValidations() {
 	var items = $$('input[validate]');

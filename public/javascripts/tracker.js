@@ -1,5 +1,5 @@
 function _tks(account)  {
-	this.version		= "0.79";
+	this.version		= "0.82";
 	var self = this;
 	this.account 		= "undefined";
 	this.trackerHost	= "noexpectations.com.au";
@@ -20,7 +20,7 @@ function _tks(account)  {
 		this.url = pageUrl || '';
 		// console.log('Track pageview has been requested for ' + self.getUrl());
 		params = []; i = 0; image = new Image(1, 1);
-		url = location.protocol + '//www.' + this.trackerHost + this.trackerImage + "?";
+		var url = location.protocol + '//www.' + this.trackerHost + this.trackerImage + "?";
 		for (p in this.urlParams) {
 			// Have to separate the next two functions
 			// to work in IE7.  Sigh.
@@ -31,6 +31,7 @@ function _tks(account)  {
 		};
 		url += params.join('&');
 		url += "&uver=" + this.version;
+		// console.log('About to get image: ' + url);
         image.src = url; // Triggers image loading
 		return;	
 	};
@@ -70,11 +71,13 @@ function _tks(account)  {
 		return navigator.userAgent;
 	};
 	this.getUrl = function() {
-		if (this.url != '') {
-			return escape(this.url)
+		var url = '';
+		if (self.url != '') {
+			url = self.url;
 		} else {
-			return escape(document.URL);
+			url = document.URL;
 		}
+		return escape(url.replace(/\/$/,''));
 	};
 	this.getPageTitle = function() {
 		return escape(document.title.replace(/^\s*/,'').replace(/\s*$/,''));
@@ -486,16 +489,23 @@ function _tks(account)  {
 		);
 		return objURL;
 	};
-	// Link handling - for outbound links
+	// Track link
 	this.trackLink = function(linkId) {
-		// console.log("Will set outbound link tracking for element '" + linkId + "'.");
-		element = document.getElementById(linkId); if (!element) return;
-		// console.log("Element found");
-		link = element.href; if (!element.href) return;
-		// console.log("Element is an anchor.");
-		element.onclick = function(e){this.trackPageview(escape(link)); e.stop(); window.location = link;}.bind(this);
-		// console.log("OnClick has been set to '" + element.onclick + "'.");
-		return true;
+		if (!linkId) return;
+		tracker = self;
+		element = document.getElementById(linkId);
+		if (element) {
+			href = element.href.replace(/\/#$/, '');
+			// console.log("Linking to: " + href);
+			f = function(e) {
+				tracker.trackPageview(href);
+				e.stopPropagation();
+				window.location = this.href;
+			};
+			element.onclick = f;
+		} else {
+			// console.log('Element not found in the DOM: ' + linkId);
+		};
 	};
 	// Form handling - send form fields to tracker
 	this.trackForm = function(form, fieldIds) {
@@ -508,7 +518,7 @@ function _tks(account)  {
 	// Track Transactions
 	this.trackTrans = function() {
 		
-	}
+	};
 	// Constructor
 	this.account = account;
 	parameters = this.parseParameters();

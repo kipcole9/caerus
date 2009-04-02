@@ -85,10 +85,12 @@ module PageLayout
   def panel(title, args = {})
     default_options = {:class => "box"}
     options = default_options.merge(args)
+    include_flash_block = options.delete(:flash)
     with_tag(:div, options) do
       with_tag(:h2) do
         with_tag(:a) { store tt(title) }
       end
+      display_flash if include_flash_block
       yield
     end
   end
@@ -106,6 +108,7 @@ module PageLayout
   end
 
   def store(content)
+    return unless content
     @level ||= 0
     spacing = " " * (@level * INDENT)
     @template.concat(spacing + content + "\n")
@@ -131,8 +134,8 @@ private
   def class_from_options(options)
     klass = []
     klass << "grid_" + options.delete(:width).to_s if options[:width]
-    klass << "prefix_" + options.delete(:prefix).to_s if options[:prefix] && !options[:prefix] == 0
-    klass << "suffix_" + options.delete(:suffix).to_s if options[:suffix] && !options[:suffix] == 0
+    klass << ("prefix_" + options.delete(:before).to_s) if options[:before]
+    klass << ("suffix_" + options.delete(:after).to_s) if options[:after]
     klass.join(' ')
   end
   
