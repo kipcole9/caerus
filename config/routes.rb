@@ -1,23 +1,31 @@
 ActionController::Routing::Routes.draw do |map|
-  map.logout '/logout', :controller => 'sessions', :action => 'destroy'
-  map.login '/login', :controller => 'sessions', :action => 'new'
-  map.register '/register', :controller => 'users', :action => 'create'
-  map.signup '/signup', :controller => 'users', :action => 'new'
+  map.logout    '/logout', :controller => 'sessions', :action => 'destroy'
+  map.login     '/login', :controller => 'sessions', :action => 'new'
+  map.register  '/register', :controller => 'users', :action => 'create'
+  map.signup    '/signup', :controller => 'users', :action => 'new'
   map.unique    '/check/:action.:format', :controller => 'validations'
 
   map.resources :users
   map.resources :campaigns
   map.resources :contacts
-  map.resources :people
+  map.resources :notes
+  map.resources :tickets
+  map.resources :organizations, :collection => {:autocomplete => :get}
+  map.resources :countries,     :collection => {:autocomplete => :get}
+      
   map.resource  :account
   map.resource  :calendar
   map.resource  :welcomes, :member => {:new_account => :get}
   map.resource  :session
   map.resource  :dashboard
+
   
   # For analytics display
   map.connect   '/tracks/show', :controller => 'tracks', :action => 'show'
-  map.trcaks    '/tracks/:metric.:format', :controller => 'tracks', :action => 'index'
+  map.tracks    '/tracks/:metric.:format', :controller => 'tracks', :action => 'index'
+  
+  # For charting
+  map.charts    '/charts/:action', :controller => 'charts'
 
   # The priority is based upon order of creation: first created -> highest priority.
 

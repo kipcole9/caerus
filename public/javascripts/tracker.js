@@ -1,5 +1,5 @@
 function _tks(account)  {
-	this.version		= "0.82";
+	this.version		= "0.84";
 	var self = this;
 	this.account 		= "undefined";
 	this.trackerHost	= "noexpectations.com.au";
@@ -109,7 +109,7 @@ function _tks(account)  {
 			return self.getUuid(15);
 		};
 		function getTdsv() {
-			tdsv = self.getCookie('_tdsv');
+			var tdsv = self.getCookie('_tdsv');
 			// console.log('Existing visitor: ' + tdsv);
 			if ( tdsv && tdsv.indexOf('.') == -1 ) {
 				// Convert the old style cookie version 1
@@ -129,19 +129,19 @@ function _tks(account)  {
 	};
 	this.incrementVisitCount = function() {
 		// tdsv has several parts:  <visitor>.<visits>.<current_visit_timestamp>.<previous_visit_timestamp>
-		tdsv = self.getVisitor();
-		currentSessionTimestamp = self.getCookie('_tdsb').split('.')[0]
-		parts = tdsv.split('.');
+		var tdsv = self.getVisitor();
+		var currentSessionTimestamp = self.getCookie('_tdsb').split('.')[0]
+		var parts = tdsv.split('.');
 		if (parts[1]) parts[1]++; else parts[1] = 1;
 		if (parts[2]) parts[3] = parts[2]; 		// Move current session to previous session
 		parts[2] = currentSessionTimestamp;		// Save current session
-		new_tdsv = parts.join('.')
+		var new_tdsv = parts.join('.')
 		// console.log('Incremented visit count to: ' + new_tdsv);
 		self.setCookie('_tdsv', new_tdsv, 720);
 		return new_tdsv;
 	};
 	this.sessionId = function() {
-		tdsb = self.getCookie('_tdsb');
+		var tdsb = self.getCookie('_tdsb');
 		return tdsb.split('.')[0];
 	};
 	this.getSession = function() {
@@ -166,8 +166,8 @@ function _tks(account)  {
 		};
 		function createNewSession() {
 			// console.log('Creating new session.');
-			tdsb = self.getCookie('_tdsb');
-			tdsc = self.getCookie('_tdsc');
+			var tdsb = self.getCookie('_tdsb');
+			var tdsc = self.getCookie('_tdsc');
 
 			if (!tdsb) {
 				tdsb = getNewSessionId() + ".1";
@@ -178,7 +178,7 @@ function _tks(account)  {
 			// Hence if missing then a new session must be started
 			if (!tdsc) {
 				tdsb = self.getCookie('_tdsb');
-				parts = tdsb.split('.');
+				var parts = tdsb.split('.');
 				parts[1] = 1;
 				tdsb = parts.join('.');
 				setTdsb(tdsb);
@@ -190,11 +190,11 @@ function _tks(account)  {
 			return tdsb;
 		};
 		function getNewSessionId() {
-			time = new Date();
-			gmtSecs = Math.round(time.getTime() / 1000) + (time.getTimezoneOffset() * 60);
+			var time = new Date();
+			var gmtSecs = Math.round(time.getTime() / 1000) + (time.getTimezoneOffset() * 60);
 			return gmtSecs;
 		};
-		session = currentSession();
+		var session = currentSession();
 		if (!session) { session = createNewSession() };
 		return session;
 	};
@@ -361,14 +361,19 @@ function _tks(account)  {
 	      expire = '; expires=' + d.toGMTString();  
 	    }
 		if (absolutePath) path = "; path=" + absolutePath;
-	    return (document.cookie = escape(name) + '=' + escape(value || '') + expire + path);  
+		var cookieValue = escape(name) + '=' + escape(value || '') + expire + path;
+		// console.log("Setting cookie: " + cookieValue);
+	    document.cookie = cookieValue;
+		return self.getCookie(name);
 	};  
-	this.getCookie = function(name) { 
+	this.getCookie = function(name) {
 	    var cookie = document.cookie.match(new RegExp(escape(name) + "\s*=\s*(.*?)(;|$)"));
-	    return (cookie ? unescape(cookie[1]) : null); 
+		var cookieValue = cookie ? unescape(cookie[1]) : null;
+		// console.log("Getting cookie " + name + ": " + cookieValue)
+	    return (cookieValue); 
 	};  
 	this.eraseCookie = function(name) {  
-	    var cookie = _tks.getCookie(name) || true;  
+	    var cookie = self.getCookie(name) || true;  
 	    this.setCookie(name, '', -1);  
 	    return cookie;  
 	};  
@@ -499,6 +504,7 @@ function _tks(account)  {
 			// console.log("Linking to: " + href);
 			f = function(e) {
 				tracker.trackPageview(href);
+				if (e.preventDefault) e.preventDefault();
 				e.stopPropagation();
 				window.location = this.href;
 			};

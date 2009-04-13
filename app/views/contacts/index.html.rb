@@ -1,11 +1,8 @@
-clear do
-  column :width => 8 do
-    include 'index'
+panel 'panels.contacts_index' do
+  block :id => :contactSearch, :class => :search do
+    search "Enter the name of the person you're looking for:", :replace => :contactCards
   end
-  
-  column :width => 4 do
-    include "widgets/tweet"
-  	include "prototypes/search"
-  	include "calendars/this_month"
-	end
+  block :id => :contactCards do
+    store render 'contacts'
+  end
 end

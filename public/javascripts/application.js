@@ -78,7 +78,7 @@ Event.addBehavior({
 		if (element.hasClassName('_new')) {
 			element.remove();
 		} else {
-			delete_field = element.childElements().last().previous();
+			delete_field = element.select('._delete').first();
 			delete_field.value = "1";
 			element.hide();
 		}
@@ -90,15 +90,35 @@ Event.addBehavior({
 Event.addBehavior({
 	'img.add:click' : function(e) {
 		var new_id = new Date().getTime();
-		fieldset = this.up().up();
+		fieldset = this.up('fieldset');
 		template = eval(fieldset.id).replace(/NEW_RECORD/g, new_id);
 		fieldset.insert({
 			bottom: template
 		});
 		element = fieldset.childElements().last();
+		new_row = element;
+		if (element.hasClassName("inline")) reorderInlineField(element);
 		element.addClassName('_new');
 		Event.addBehavior.reload();
 		setupValidations();
+		fields = new_row.select('input[focus], textarea[focus]');
+		if (fields.length > 0) fields.first().focus();
+	}	
+});
+
+//  When we set an entry to be "preferred" we unset all
+//  the others
+Event.addBehavior({
+	'input[type="checkbox"].preferred:click' : function(e) {
+		if (this.checked) {
+			fieldset = this.up('fieldset');
+			myId = this.id;
+			fieldset.select('input[type="checkbox"].preferred').each(function(e, n) {
+				if (e.id != myId) {
+					e.checked = false;
+				}
+			});
+		}
 	}	
 });
 
@@ -121,18 +141,39 @@ Event.addBehavior({
 	}
 });
 
+// Resizing for contact cards on Contacts index page
+Event.observe(document.onresize ? document : window, "resize", function() {
+	if (contacts = $('contactCards')) {
+		console.log('Width is ' + contacts.getWidth());
+		new_width = (contacts.getWidth() - 20) / 3;
+		console.log('Setting widths to ' + new_width);
+		$$('.contactCard').each(function(e) {
+			e.setStyle({width: new_width});
+		});
+	} 
+});
+
 // When a form is "inline" we want the field message (used for validation)
 // to be moved to the end of the enclosing div. That allows us to
 // position the message better.
 function reorderInlineFieldMessages() {
 	var fieldList = $$('div.inline span.field_message');
-	fieldList.each(
-		function(i, n) {
-			parent = i.up().up();
-			element = i.remove();
-			parent.insert(i);
+	fieldList.each(function(i,n) {
+			reorderInlineFieldMessage(i);
 		}
 	);
+};
+
+function reorderInlineFieldMessage(f) {
+	parent = f.up().up();
+	element = f.remove();
+	parent.insert(f);
+};
+
+function reorderInlineField(f) {
+	f.select('.field_message').each(function(i,n) {
+		reorderInlineFieldMessage(i);
+	})
 };
 
 function setupValidations() {

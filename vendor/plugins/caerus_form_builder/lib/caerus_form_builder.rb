@@ -1,5 +1,6 @@
 class CaerusFormBuilder < ActionView::Helpers::FormBuilder
   DEFAULT_SUFFIX  = ":"
+  include ActionView::Helpers::FormTagHelper
   
   # Default class definitions
   FORM_FIELD      = "formField"
@@ -10,8 +11,7 @@ class CaerusFormBuilder < ActionView::Helpers::FormBuilder
   # my usual defaults
   def text_field(method, options = {})
     default_options = {:size => 30}
-    field_options = {:before => options.delete(:before), :after => options.delete(:after)}
-    after = options[:after] | ""
+    field_options = {:before => options.delete(:before), :after => options.delete(:after), :autocomplete => options.delete(:autocomplete)}
     with_field(method, field_options) do
       super(method, default_options.merge(options))
     end
@@ -31,7 +31,7 @@ class CaerusFormBuilder < ActionView::Helpers::FormBuilder
      
   def text_area(method, options = {})
     default_options = {:size => "50x5"}
-    with_field(method) do
+    with_field(method, options) do
       super(method, default_options.merge(options))
     end 
   end
@@ -51,8 +51,8 @@ class CaerusFormBuilder < ActionView::Helpers::FormBuilder
   end  
    
   def check_box(method, options = {}, checked_value = "1", unchecked_value = "0")
-    default_options = {}
-    with_field(method, :label_class => "checkbox") do
+    default_options = {:label_class => "checkbox"}
+    with_field(method, default_options.merge(options)) do
       super(method, default_options.merge(options), checked_value, unchecked_value)
     end
   end
@@ -72,9 +72,9 @@ class CaerusFormBuilder < ActionView::Helpers::FormBuilder
   end
  
   def date_select(method, options = {}, html_options = {})   
-    default_html_options = {}
+    default_html_options = {:class => :date}
     with_field(method) do
-      super(method, options, default_html_options.merge(options))
+      @template.content_tag(:div, super(method, options, default_html_options.merge(options)), :class => :date)
     end
   end
   
@@ -87,12 +87,13 @@ class CaerusFormBuilder < ActionView::Helpers::FormBuilder
   
   def buttons(*args)
     if args.include?(:delete)
-      hidden_field('_delete')
+      hidden_field('_delete', :class => "_delete")
     end
     @template.buttons(args)
   end
     
-private  
+private
+  # keep :javascript, "org = new AutoComplete('contact_organization', { json: true, script:'/organizations/autocomplete.json?' });"
 
   # Standard field definitions
   def with_field(method, options = {}, &block)
@@ -107,11 +108,19 @@ private
       label_class << options.delete(:label_class) if options[:label_class]
       label = @template.content_tag(:label, format_label(method), :for => "#{field_id}", :class => label_class.join(' '))
     end
-    content = @template.content_tag(:p, label + \
-      @template.content_tag(:span, "", :id => "#{field_id}_message", :class => 'field_message') + \
-      before + field_definition + after) 
-    content += @template.content_tag(:p, prompt, :class => "prompt") unless prompt.blank?
-    @template.concat(content + "\n") if File.extname(@template.template.filename) == ".rb" 
+    content = @template.content_tag(:div, label + \
+      @template.content_tag(:span, '', :id => "#{field_id}_message", :class => 'field_message') + \
+      before + field_definition + after + \
+      (prompt.blank? ? '' : @template.content_tag(:p, prompt, :class => "prompt")), :class => :field)
+    if options.delete(:autocomplete)
+      autocomplete_js = "var #{field_id} = new AutoComplete('#{field_id}', { json: true, script:'/#{method.to_s.pluralize}/autocomplete.json?' });\n"
+      if field_id =~ /NEW_RECORD/
+        @template.javascript(autocomplete_js) 
+      else
+        @template.content_for :javascript, autocomplete_js
+      end
+    end
+    @template.concat(content + "\n") if File.extname(@template.template.filename) == ".rb"
   end
 
   def spinner_images(object_name, method)

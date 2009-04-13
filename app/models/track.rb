@@ -160,7 +160,7 @@ class Track < ActiveRecord::Base
   def self.available_metrics
     @@available_metrics = nil unless defined?(@@available_metrics)
     return  @@available_metrics || 
-            @@available_metrics = self.scopes.keys.reject!{|k| NON_METRIC_KEYS.include? k }.map(&:to_s)
+            @@available_metrics = self.scopes.keys.reject{|k| NON_METRIC_KEYS.include? k }.map(&:to_s)
   end
   
   # Visitor may have several parts when imported from the tracking system
@@ -174,8 +174,7 @@ class Track < ActiveRecord::Base
     raise "Track: Badly formed visitor variable: '#{v}" if parts.size > 4
     self.write_attribute('visitor', parts[0])
     self.visit = parts[1] if parts[1]
-    parts[3] = parts[3].to_i / 1000 if parts[3] && parts[3].to_i.is_a?(Bignum)
-    self.previous_session = Time.at(parts[3].to_i) if parts[3]
+    self.previous_session = to_time(parts[3]) if parts[3]
   end
   
   # Session has two possible parts
@@ -189,7 +188,14 @@ class Track < ActiveRecord::Base
     self.view = parts[1] if parts[1]    
   end
 
+  def to_time(timestamp)
+    return nil unless timestamp
+    the_time = timestamp.size > 10 ? (timestamp.to_i / 1000) : timestamp.to_i
+    Time.at(the_time) if the_time
+  end
+
 private
+
   def create_site_relationship
     return unless self.site_code
     self.site = Site.find_by_tracker(self.site_code)

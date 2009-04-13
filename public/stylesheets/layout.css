@@ -318,17 +318,17 @@ fieldset.login p {
 	margin-bottom:1em;
 	margin-top:0pt;
 }
-fieldset p label {
+fieldset p label, fieldset div label {
 	width:98%;
 	font-weight: bold;
 }
-fieldset p input {
+fieldset p input, fieldset div input {
 	/* width:98%; */
 	display: block;
 	margin-top: 0;
 	margin-left: 0;
 }
-fieldset p select {
+fieldset p select, fieldset div select {
 	/* width:99%; */
 	display: block;
 	margin-left: 0;
@@ -347,7 +347,7 @@ fieldset.login p input{
 	width:60%;
 }
 
-fieldset p input[type="checkbox"] {
+fieldset p input[type="checkbox"], fieldset div input[type="checkbox"] {
 	display: inline-block;
 	margin-top: 6px;
 }

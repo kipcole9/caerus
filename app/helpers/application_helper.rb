@@ -70,15 +70,23 @@ module ApplicationHelper
   def display_flash
     if flash[:error]
       with_tag(:div, :class => "box flash_error") do
-        store image_tag "/images/icons/exclamation.png"
-        store flash[:error]
+        with_tag(:p) do
+          store image_tag("/images/icons/exclamation.png")
+          store flash[:error]
+        end
       end
     elsif flash[:notice]
       with_tag(:div, :class => "box flash_notice") do
-        store image_tag "/images/icons/accept.png"
-        store flash[:notice]
+        with_tag(:p) do
+          store image_tag("/images/icons/accept.png")
+          store flash[:notice]
+        end
       end   
     end
+  end
+  
+  def display_errors(model)
+    store error_messages_for(model, :class => "box errorExplanation", :id => "#{model.to_s}_errors")
   end
   
   # Get a list of time zones that are in the same UTC offset
@@ -155,7 +163,7 @@ module ApplicationHelper
   end
   
   def render_form(form_builder, partial)
-    render :partial => partial, :locals => { :f => form_builder }
+    render(:partial => partial, :locals => { :f => form_builder })
   end
   
   def javascript(content)
@@ -182,7 +190,7 @@ private
       when :add
         button_images << "<img src='/images/icons/add.png' class='add' />"
       when :delete
-        button_images << "<img src='/images/icons/cross.png' class='delete' />"
+        button_images << "<img src='/images/icons/delete.png' class='delete' />"
       end
     end
     button_images.join(' ')

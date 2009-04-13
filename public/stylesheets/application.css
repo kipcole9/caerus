@@ -1,3 +1,13 @@
+body {
+	padding-bottom 0;
+}
+
+input[type="text"] {
+	line-height: 1em;
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+
 /* Specific css for things out of the normal template flow */
 .container_12 {
 	min-width: 860px;
@@ -5,10 +15,14 @@
 
 /* New account setup, selecting a sitename */
 div.sitename {
+	display: inline;
 	margin-top: -10px;
 	margin-left: 2px;
 }
 
+div.sitename input[type="text"] {
+	display: inline;
+}
 div.sitename + .prompt, div.sitename div.fieldWithErrors .prompt {
 	margin-top: 3px;
 }
@@ -45,6 +59,32 @@ h1#branding, h2#page-heading {
 	padding-left: 11px;
 }
 
+.block .tab {
+	margin-bottom: 0;
+}
+
+/* Flash */
+div.flash_notice, div.flash_error {
+	padding: 5px;
+	margin-top: 5px;
+	margin-bottom: -3px;
+	background-color: #bfb;
+	border: 1px solid #999;
+}
+
+div.flash_notice img, div.flash_error img {
+	position: relative;
+	top: 0.3em;
+}
+
+div.flash_notice p, div.flash_error p {
+	margin: 0;
+	padding-bottom: 2px;
+}
+
+div.flash_error {
+	background-color: #fbb;
+}
 
 /* The field error message from validations */
 span.field_message {
@@ -54,7 +94,7 @@ span.field_message {
 
 /* Field prompts under the input field */
 p.prompt {
-	margin-top: -0.9em;
+	margin-top: 0.2em;
 	margin-left: 1px;
 	line-height: 1.1em;
 }
@@ -62,13 +102,16 @@ p.prompt {
 /* Form sections */
 form {
 	position: relative;
+	
+	/* To provide some spacing below the form contents
+	to allow for the submit and cancel buttons */
+	padding-bottom: 2.2em;
 }
 
 form .section_left {
 	position: relative;
 	float: left;
 	width: 48%;
-	/* border-right: 1px dotted black; */
 	padding-right: 10px;
 }
 
@@ -84,6 +127,36 @@ form .submit_button {
 	position: absolute;
 	bottom: 0.4em;
 	right: 0px;
+}
+
+form .field_message + select {
+	margin-top: 0.1em;
+}
+
+form img {
+	margin-top: 0.5em;
+}
+textarea {
+	margin: 0;
+	padding: 2px 2px 2px 0;
+	display: block;
+	-webkit-appearance: textfield;
+	-moz-appearance: textfield;
+}
+
+input[type="file"] {
+	-moz-appearance: textfield;
+	margin: 0;
+	padding: 0;
+}
+
+div.field + div.field {
+	margin-top: 0.3em;
+}
+
+/* Date multi select boxes in line */
+div.date select {
+	display: inline;
 }
 
 /* Help boxes */
@@ -104,9 +177,9 @@ h1.signup {
 	margin-bottom: 30px;
 }
 
-
+/* For fieldsets */
 legend {
-	padding:.2em .8em;
+	padding: 0.2em 0.8em;
 }
 
 /* The add button in fieldsets that represent
@@ -118,73 +191,232 @@ legend img, img.delete {
 legend img {
 	top: 0.25em;
 	left: 0.4em;
+	margin-top: 0;
 }
 
 img.delete {
 	left: 0.1em;
-	top: 0.35em;
+	top: 0.32em;
 }
 
-/* To provide some spacing below the form contents
-to allow for the submit and cancel buttons */
-form {
-	padding-bottom: 2em;
-	margin-bottom: 0.2em;
+
+div.fieldWithErrors input {
+	border: 1px dashed red;
 }
 
-/* For forms in the sidebar that are for search, etc */
-form.search {
-	padding: 0;
-	margin: 0;
+div.errorExplanation {
+	margin-top: 10px;
+	margin-bottom: 5px;
+}
+
+div.errorExplanation ul {
+	margin-bottom: 0;
 }
 
 /* Forms inline display */
-div.inline p, div.inline label, div.inline input, div.inline select, div.inline .fieldWithErrors {
+div.inline div, div.inline label, div.inline input, div.inline select, div.inline .fieldWithErrors,
+div.inline textarea {
 	display: inline;
 }
 
 div.inline .fieldWithErrors {
 	top: 0;
 }
-div.inline input {
+
+div.inline input, div.inline textarea {
 	margin-right: 5px;
 }
 
-div.inline {
-	margin-bottom: 6px;
+div.inline textarea {
+	vertical-align: top;
+	float: right;
 }
 
 div.inline label {
 	margin-right: 3px;
 }
 
-div.inline + div.inline label {
+div.inline + div.inline div label, div.address._new label {
 	color: #aaa;
 }
 
 div.inline label {
-	margin-right: 0.4em;
-}
-
-/* Flash */
-div.flash_notice, div.flash_error {
-	padding: 5px;
-	margin-top: 5px;
-	margin-bottom: -3px;
-	background-color: #bfb;
-	border: 1px solid #999;
-}
-
-div.flash_notice img, div.flash_error img {
+	float: left;
+	width: 6em;
 	position: relative;
-	top: 0.25em;
-}
-
-div.flash_error {
-	background-color: #fbb;
+	top: 0.65em;
 }
 
 /* Menu transparency */
 ul.main li ul {
   opacity: 0.9;
+}
+
+div.block {
+	padding-bottom: 5px;
+}
+
+/* Formatting for addresses */
+fieldset#address input, fieldset#address textarea, fieldset#address select {
+	margin-bottom: 0.7em;
+}
+
+fieldset#address textarea, fieldset#address select, fieldset#address span {
+	vertical-align: top;
+	float: left;
+}
+
+fieldset#address textarea {
+	margin-left: 0;
+	line-height: 1.2em;
+}
+
+fieldset#address div {
+	margin-bottom: 0;
+}
+
+form input[type="checkbox"] {
+	margin-right: 0.4em;
+	margin-top: 0.3em;
+}
+
+fieldset#address label {
+	float: left;
+	width: 6em;
+	position: relative;
+	top: 0.25em;
+}
+
+fieldset#address label.street {
+	top: 0.1em;
+}
+
+fieldset#address select {
+	margin: 0 0 0 5px;
+}
+
+fieldset#address img.delete {
+	top: -0.4em;
+	margin-left: 0.25em;
+}
+
+div.address._new {
+	margin-top: 0.6em;
+	padding-top: 1em;
+	border-top: 1px dotted #ccc;
+}
+
+/* Contact card display */
+#contactCards {
+	margin-left: 0px;
+	margin-right: -5px;
+}
+
+div.contactCard {
+	position: relative;
+	float: left;
+	width: 30.6%; 
+	height: 130px;
+	background-color: white;
+	margin-bottom: 10px;
+	margin-right: 5px;
+	margin-left: 0px;
+	margin-top: 5px;
+	padding: 5px;
+	-webkit-box-shadow: 5px 5px 3px #888;
+	-moz-box-shadow: 5px 5px 3px #888;
+	overflow: hidden;
+}
+
+div.contactCard p {
+	font-size: 11px;
+}
+
+div.contactCard:hover {
+	cursor: move;
+}
+
+div.contactCard img.avatar {
+	float: right;
+}
+
+div.contactCard img.icon {
+	position: relative;
+	width: 11px;
+	top: 0.25em;
+}
+
+div.contactCard img.merge {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+}
+
+div.contactCard img.merge:hover {
+	border: 1px solid #888;
+}
+div.contactCard h3, div.contactCard h4 {
+	font-size: 100%;
+	font-weight: bold;
+	margin-bottom: 0;
+}
+div.contactCard h4 {
+	font-weight: normal;
+	font-size: 11px;
+}
+div.contactCard h3 + p, div.contactCard h4 + p {
+	margin-top: 0.3em;
+}
+div.contactCard p {
+	margin-bottom: 0;
+	line-height: 1.2em;
+	white-space: nowrap;
+	overflow: hidden;
+	overflow: ellipsis;
+	max-width: 95%;	
+}
+
+div.contactCard p.email a, div.contactCard p.website a {
+	font-weight: normal;
+}
+
+/* Pagination */
+
+#contactCards .pagination {
+	margin-left: 5px;
+}
+
+.pagination a, .pagination span.prev_page, .pagination span.next_page, .pagination span.current {
+	position: relative;
+	top: 0px;
+	border: 1px solid #888;
+	display: inline-block;
+	padding: 1px;
+	margin: 1px;
+	margin-top: 3px;
+	margin-bottom: 3px;
+	width: 20px;
+	height: 20px;
+	text-align: center;
+	vertical-align: center;
+	line-height: 20px;
+}
+
+.pagination a.next_page, .pagination span.next_page,
+.pagination a.prev_page, .pagination span.prev_page {
+	width: 80px;
+}
+
+.pagination span.prev_page {
+	margin-left: 0;
+}
+
+/* Search */
+div.search {
+	margin-top: 10px;
+	margin-bottom: -10px;
+}
+
+div.search form {
+	padding-bottom: 0;
 }

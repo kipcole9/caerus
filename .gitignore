@@ -4,4 +4,6 @@ tmp/**/*
 tmp/*
 config/database.yml
 vendor/rails/**/*
+public/track_data
+
 

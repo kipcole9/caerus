@@ -7,8 +7,7 @@ class User < ActiveRecord::Base
   
   VALID_USER_NAME            = /\A[^[:cntrl:]\\<>\/&]+\z/ 
   belongs_to                :account
-  has_many                  :logs, :as => :content, :dependent => :destroy
-  has_many                  :logged_items, :class_name => "Log"
+  has_many                  :histories, :class_name => "History", :foreign_key => :created_by
 
   validates_presence_of     :login
   validates_length_of       :login,         :within => 3..40

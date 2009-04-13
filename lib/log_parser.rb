@@ -46,8 +46,8 @@ class LogParser
   
   def parse_log(filename)
     web_analyser = WebAnalytics.new
-    last_log_time = Track.maximum(:tracked_at) || Date.new(2009, 1, 1)
-    RAILS_DEFAULT_LOGGER.debug "Last log time is #{last_log_time}. No entries before that time will be imported."
+    last_log_time = Date.new(2009, 4, 5)
+    RAILS_DEFAULT_LOGGER.debug "Last start time is #{last_log_time}. No entries before that time will be imported."
     File.open(filename, "r") do |infile|
       while (line = infile.gets)
         entry = parse_entry(line)

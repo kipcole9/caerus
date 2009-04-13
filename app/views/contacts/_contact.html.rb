@@ -1,5 +1,11 @@
 # Render and object in business card layout
-with_tag(:div, :class => "business_card") do
-  store contact.given_name
-  store contact.family_name
+with_tag(:div, :class => "contactCard", :id => "contact_#{contact['id']}") do
+  img contact.photo.url(:avatar), :class => :avatar if contact.photo?
+  h3 link_to(contact.full_name, contact)
+  h4 contact.role
+  h4 contact.organization
+  contact.phones.each   {|phone| p "#{phone_icon(phone)} #{phone.number}", :class => :phone}
+  contact.emails.each   {|e| p "#{image_tag '/images/icons/email.png', :class => :icon} #{link_to e.address, 'mailto:' + e.address}", :class => :email }
+  contact.websites.each {|w| p "#{image_tag '/images/icons/world.png', :class => :icon} #{link_to w.url, w.url}", :class => :website }
+  img '/images/icons/arrow_join.png', :class => :merge, :title => tt('merge_into_another_contact')
 end

@@ -10,6 +10,11 @@ module PageLayout
 
   TAGS      = [:div, :a, :img, :script, :meta]
   INDENT    = 2
+  
+  # So that capture does the right thing for us
+  #def __in_erb_template
+  #  true
+  #end
 
   def doctype(type = DOCTYPE[:xhtml_strict])
     @doctype = store(type)
@@ -48,7 +53,7 @@ module PageLayout
     head unless @head
     default_options = {:columns => 12, :prefix => "container" }
     options = default_options.merge(args)
-    @body = with_tag(:body) do
+    with_tag(:body) do
       container do
         yield
       end
@@ -73,9 +78,10 @@ module PageLayout
     end
   end
   
-  def clear
+  def clear(options = {})
+    default_options = {:class => "clear"}
     yield if block_given?
-    with_tag(:div, :class => "clear")
+    with_tag(:div, default_options.merge(options))
   end
  
   def text(t)
@@ -86,11 +92,13 @@ module PageLayout
     default_options = {:class => "box"}
     options = default_options.merge(args)
     include_flash_block = options.delete(:flash)
+    errors_on = options.delete(:display_errors)
     with_tag(:div, options) do
       with_tag(:h2) do
         with_tag(:a) { store tt(title) }
       end
       display_flash if include_flash_block
+      display_errors(errors_on) if errors_on      
       yield
     end
   end
@@ -119,8 +127,58 @@ module PageLayout
     store render(*args)
   end
   
+  def keep(name, text = '')
+    ivar = "@content_for_#{name}"
+    temp_output_buffer = @output_buffer
+    @output_buffer = ""
+    block_given? ? yield : @output_buffer = text
+    instance_variable_set(ivar, "#{instance_variable_get(ivar)}#{@output_buffer}")
+    @output_buffer = temp_output_buffer
+    nil
+  end
+  
+  def p(text, options = {})
+    with_tag(:p, options) do
+      store text
+    end
+  end
+  
+  def img(*args)
+    store image_tag(*args)
+  end
+  
+  def fieldset(legend)
+    with_tag(:fieldset) do
+      with_tag(:legend) do
+        store legend
+      end
+      yield
+    end
+  end
+  
+  def search(title = "Enter your search", options = {})
+    default_options = {:class => :search}
+    options = default_options.merge(options)
+    with_tag(:form, :class => options[:class], :method => :put) do
+      fieldset title do
+        store "<input class='search text' name='search' type='text'/>"
+      end
+    end
+  end
+  
+  def method_missing(method, *args, &block)
+    if [:h4, :h3, :h2, :h1].include?(method)
+      return nil if args.last.blank?
+      with_tag(method) do
+        store args.pop
+      end
+    else
+      super
+    end
+  end
+  
 private
-  def with_tag(tag, options = {})
+  def with_tag(tag, options = {}, &block)
     tag_start = []
     tag_start << "<#{tag.to_s}"
     options.each{|k, v| tag_start << "#{k.to_s}=#{quote(v.to_s)}"}
@@ -129,6 +187,7 @@ private
     yield if block_given?
     decrement_level
     store("</#{tag.to_s}>")
+    ''
   end
 
   def class_from_options(options)

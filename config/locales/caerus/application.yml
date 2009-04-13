@@ -10,9 +10,12 @@ en-US:
     login:                  Login
     remember_me:            Remember me
     save:                   Save your changes
+    submit:                 Submit
     now:                    Now
     next_month:             Next Month
     next_quarter:           Next Quarter
+    preferred:              Preferred?
+    merge_into_another_contact: Drag to merge this contact into another
     
     panels:
         edit_contact:       Update this contact's information
@@ -34,6 +37,7 @@ en-US:
 
     email_types:            [["Work", "work"], ["Personal", "personal"], ["Other", "other"]]
     website_types:          [["Work", "work"], ["Personal", "personal"], ["Other", "other"]]
+    address_types:          [["Work", "work"], ["Home", "home"], ["Mailing", "mailing"], ["Other", "other"]]
     phone_types:            [["Work", "direct"], ["Home", "home"], ["Mobile", "mobile"], 
                             ["Skype", "skype"], ["Main", "main"], ["Fax", "fax"], 
                             ["Pager", "pager"], ["Other", "other"]]
