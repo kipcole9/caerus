@@ -2,6 +2,7 @@ en-US:
     must_login:             You must login to access this page.
     cancel:                 Cancel
     help:                   Help
+    search:                 Search...
     my_settings:            Settings
     account_settings:       Account
     or:                     or
@@ -16,14 +17,41 @@ en-US:
     next_quarter:           Next Quarter
     preferred:              Preferred?
     merge_into_another_contact: Drag to merge this contact into another
+    show_all_fields:        Show all fields?
     
+    contacts:
+        index:
+            name_search:    Search by name
+            
+    groups:
+        index:
+            group_search:   Search
+        group:
+            add_new_group:  "Enter the group's information" 
+        group_summary:
+            delete_group:   "Are you sure you want to delete group '{{group}}'?"
+            
+    users:
+        index:
+            user_search:    Search
+            
+    teams:
+        index:
+            team_search:    Search
+        team:
+            add_new_team:   "Enter the team's information"    
+                    
     panels:
-        edit_contact:       Update this contact's information
-        new_contact:        Create a new contact
-        contacts_index:     Contacts
-        emails_opened:      Emails opened
-        emails_clicked:     Emails clicked
-        emails_summary:     Emails summary
+        edit_contact:       "Update {{name}}'s information"
+        new_contact:        "Create a new contact"
+        contacts_index:     "Contacts"
+        emails_opened:      "Emails opened"
+        emails_clicked:     "Emails clicked"
+        emails_summary:     "Emails summary"
+        contacts_index:     "Contact cards"
+        configure_groups:   "Configure groups"
+        user_pick_list:     "User Directory"
+        configure_teams:    "Configure teams"
     
     
     column_descriptions:
@@ -34,6 +62,10 @@ en-US:
         timezone:           "The time zone in which you, personally, mostly work. You can change at any time."
         account:
             name:           "You'll access your own <em>secure &amp; private</em> system using this account name.  It can be anything you like, as long as it is comprised of <em>letters</em>, <em>numbers</em> or <em>'-'</em> (a dash)."
+        person:
+            honorific_prefix:   "For example 'Mr.', 'Ms.', 'Dr.', 'Rev.'"
+            honorific_suffix:   "For example 'Phd.', 'KCMG'"
+            salutation:         "For example 'Dear Mr. Jones'"
 
     email_types:            [["Work", "work"], ["Personal", "personal"], ["Other", "other"]]
     website_types:          [["Work", "work"], ["Personal", "personal"], ["Other", "other"]]
@@ -41,6 +73,9 @@ en-US:
     phone_types:            [["Work", "direct"], ["Home", "home"], ["Mobile", "mobile"], 
                             ["Skype", "skype"], ["Main", "main"], ["Fax", "fax"], 
                             ["Pager", "pager"], ["Other", "other"]]
+    affiliations:           [["Family", "family"], ["Friends", "friends"], ["Colleagues", "colleagues"]]
+    gender:                 [["Male", "male"], ["Female", "female"], ["Unknown", "unknown"]]
+    name_order:             [["Given then Family", 'gf'], ["Family then Given", "fg"]]                      
                 
     accounts:
         new_account:

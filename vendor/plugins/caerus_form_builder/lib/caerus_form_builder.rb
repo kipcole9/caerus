@@ -10,8 +10,10 @@ class CaerusFormBuilder < ActionView::Helpers::FormBuilder
   # Standard input fields; wrapped in a standard wrapper and with
   # my usual defaults
   def text_field(method, options = {})
-    default_options = {:size => 30}
-    field_options = {:before => options.delete(:before), :after => options.delete(:after), :autocomplete => options.delete(:autocomplete)}
+    default_options = {}
+    field_options = {:before => options.delete(:before), :after => options.delete(:after), 
+                     :autocomplete => options.delete(:autocomplete), 
+                     :optional => options.delete(:optional)}
     with_field(method, field_options) do
       super(method, default_options.merge(options))
     end
@@ -96,37 +98,56 @@ private
   # keep :javascript, "org = new AutoComplete('contact_organization', { json: true, script:'/organizations/autocomplete.json?' });"
 
   # Standard field definitions
-  def with_field(method, options = {}, &block)
+  def with_field(method, args = {}, &block)
+    default_options = {:before => '', :after => '', :autocomplete => false, 
+                       :label_class => :field_label, :optional => false,
+                       :field_class => :field  }
+    options = default_options.merge(args)
     field_definition = @template.capture(&block)
     field_id = field_definition.match(/id=\"(.+?)\"/)[1]
-    before = options[:before] || ""
-    after = options[:after] || ""
-    label = ''
+    before = options.delete(:before)
+    after = options.delete(:after)
     prompt = get_prompt(object_name, method)
-    unless options.delete(:no_label)
-      label_class = []
-      label_class << options.delete(:label_class) if options[:label_class]
-      label = @template.content_tag(:label, format_label(method), :for => "#{field_id}", :class => label_class.join(' '))
-    end
-    content = @template.content_tag(:div, label + \
-      @template.content_tag(:span, '', :id => "#{field_id}_message", :class => 'field_message') + \
-      before + field_definition + after + \
-      (prompt.blank? ? '' : @template.content_tag(:p, prompt, :class => "prompt")), :class => :field)
-    if options.delete(:autocomplete)
-      autocomplete_js = "var #{field_id} = new AutoComplete('#{field_id}', { json: true, script:'/#{method.to_s.pluralize}/autocomplete.json?' });\n"
-      if field_id =~ /NEW_RECORD/
-        @template.javascript(autocomplete_js) 
-      else
-        @template.content_for :javascript, autocomplete_js
-      end
-    end
-    @template.concat(content + "\n") if File.extname(@template.template.filename) == ".rb"
+    label = get_label(field_id, method, options)
+    field_message = get_field_message(field_id)
+    field_options = field_options_from(options)
+    content = @template.content_tag(:div,
+             "#{label}#{field_message}#{before}#{field_definition}#{after}#{prompt}", 
+             field_options)
+    add_autocompleter(method, field_id, options)
+    ruby_template? ? @template.concat(content + "\n") : content
   end
-
+  
+  def field_options_from(options)
+    field_options = {}
+    field_options[:class] = options.delete(:field_class).to_s
+    if options.delete(:optional)
+      field_options[:class] += " optional"
+      field_options[:style] = "display:none"
+    end
+    field_options
+  end
+  
+  def ruby_template?
+    File.extname(@template.template.filename) == ".rb"
+  end
+  
   def spinner_images(object_name, method)
     "<img id='#{object_name}_#{method}_spinner' src='/images/spinners/arrows.gif' class='spinner' style='display:none' />" + \
     "<img id='#{object_name}_#{method}_cross' src='/images/icons/cross.png' class='spinner' style='display:none' />" + \
     "<img id='#{object_name}_#{method}_tick' src='/images/icons/tick.png' class='spinner' style='display:none' />"
+  end
+
+  def get_field_message(field_id)
+    @template.content_tag(:span, '', :id => "#{field_id}_message", :class => 'field_message')
+  end
+  
+  def get_label(field_id, method, options)
+    return '' if options.delete(:no_label)
+    label_options = {}
+    label_options[:class] = options[:label_class] if options[:label_class]
+    label_options[:for] = field_id
+    @template.content_tag(:label, format_label(method), label_options)
   end
   
   def format_label(label, options = {})
@@ -136,9 +157,20 @@ private
   def get_prompt(table, column)
     prompt = I18n.translate("column_descriptions.#{object_name}.#{column}", :default => "none")
     prompt = I18n.translate("column_descriptions.#{column}", :default => "") if prompt == "none"
-    return prompt
+    prompt.blank? ? '' : @template.content_tag(:p, prompt, :class => "prompt")
   end
   
+  def add_autocompleter(method, field_id, options)
+    if options.delete(:autocomplete)
+      controller = method.to_s.split('_').first.pluralize
+      autocomplete_js = "var #{field_id} = new AutoComplete('#{field_id}', { json: true, script:'/#{controller}/autocomplete.json?' });\n"
+      if field_id =~ /NEW_RECORD/
+        @template.javascript(autocomplete_js) 
+      else
+        @template.content_for :javascript, autocomplete_js
+      end
+    end
+  end
 end
 
 

@@ -62,7 +62,7 @@ AutoComplete.prototype = { // {{{
     timeout:3000,
     delay:500,
     offsety:-5,
-    shownoresults: no,
+    shownoresults: false,
     noresults: "No results were found.",
     maxheight: 250,
     cache: true,

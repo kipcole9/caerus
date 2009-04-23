@@ -10,12 +10,18 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :contacts
   map.resources :notes
   map.resources :tickets
+  
+  map.resources :teams, :has_many => :members
+  map.merge_teams 'teams/:team_to_id/merge/:team_from_id', 
+                :controller => 'teams', :action => 'merge', :conditions => { :method => :put }
+
+  map.resources :groups,        :has_many => :members
   map.resources :organizations, :collection => {:autocomplete => :get}
   map.resources :countries,     :collection => {:autocomplete => :get}
       
   map.resource  :account
   map.resource  :calendar
-  map.resource  :welcomes, :member => {:new_account => :get}
+  map.resource  :welcomes,      :member => {:new_account => :get}
   map.resource  :session
   map.resource  :dashboard
 

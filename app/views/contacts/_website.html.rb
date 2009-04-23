@@ -1,6 +1,6 @@
 with_tag(:div, :class => :inline) do
-  f.hidden_field :id
-  f.text_field :url, :focus => true
-  f.select :kind, I18n.translate('website_types'), :no_label => true
-  f.buttons :delete
+  website.hidden_field :id
+  website.text_field :url, :focus => true
+  website.select :kind, I18n.translate('website_types'), :no_label => true
+  website.buttons :delete
 end

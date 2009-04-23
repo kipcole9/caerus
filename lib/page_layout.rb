@@ -54,28 +54,22 @@ module PageLayout
     default_options = {:columns => 12, :prefix => "container" }
     options = default_options.merge(args)
     with_tag(:body) do
-      container do
-        yield
-      end
+      container(&block)
     end
   end
   
   def container(args = {}, &block)
     default_options = {:columns => 12, :prefix => "container" }
     options = default_options.merge(args)
-    with_tag(:div, :class => "#{options[:prefix]}_#{options[:columns]}") do
-      yield
-    end
-    with_tag(:div, :class => "clear")
+    with_tag(:div, :class => "#{options[:prefix]}_#{options[:columns]}", &block)
+    clear
   end
   
-  def column(args)
+  def column(args, &block)
     default_options = {:width => 3}
     options = default_options.merge(args)
     options[:class] = class_from_options(options)
-    with_tag(:div, options) do
-      yield
-    end
+    with_tag(:div, options, &block)
   end
   
   def clear(options = {})
@@ -83,9 +77,19 @@ module PageLayout
     yield if block_given?
     with_tag(:div, default_options.merge(options))
   end
- 
-  def text(t)
-    t
+
+  def toggle(text, options = {}, &block)
+    default_options = {:only => {}, :except => {}, :initial => :show}
+    toggle_id = "i#{Time.now().to_i}"
+    store link_to(text, "#", :class => "toggle_handle", :rel => toggle_id)
+    with_tag(:div, :id => toggle_id, &block)
+  end
+  
+  def page(options = {}, &block)
+    default_options = {:content => :page, :layout => '/layouts/application'}
+    options = default_options.merge(options)
+    keep(options[:content], &block)
+    store render(:file => options[:layout])
   end
 
   def panel(title, args = {})
@@ -95,7 +99,7 @@ module PageLayout
     errors_on = options.delete(:display_errors)
     with_tag(:div, options) do
       with_tag(:h2) do
-        with_tag(:a) { store tt(title) }
+        store link_to(title)
       end
       display_flash if include_flash_block
       display_errors(errors_on) if errors_on      
@@ -103,11 +107,11 @@ module PageLayout
     end
   end
   
-  def block(args = {})
+  def block(args = {}, &block)
     default_options = {:class => "block"}
     options = default_options.merge(args)
     with_tag(:div, options) do
-      yield
+      with_tag(:div, {}, &block)
     end
   end
   
@@ -122,6 +126,7 @@ module PageLayout
     @template.concat(spacing + content + "\n")
     content
   end
+  alias :s :store
   
   def include(*args)
     store render(*args)
@@ -147,23 +152,18 @@ module PageLayout
     store image_tag(*args)
   end
   
-  def fieldset(legend)
-    with_tag(:fieldset) do
-      with_tag(:legend) do
-        store legend
-      end
-      yield
+  def search(title = t('search'), options = {})
+    default_options = {:class => 'search'}
+    options   = default_options.merge(options)
+    url       = options.delete(:url)
+    replace   = options.delete(:replace)
+    var       = options[:id]
+    search_id = "#{options[:id]}Field"
+    with_tag(:form, options) do
+      store "<label>#{title}:</label>"
+      store "<input class='search text' name='#{search_id}' type='text' id='#{search_id}' AutoComplete='off' />"
     end
-  end
-  
-  def search(title = "Enter your search", options = {})
-    default_options = {:class => :search}
-    options = default_options.merge(options)
-    with_tag(:form, :class => options[:class], :method => :put) do
-      fieldset title do
-        store "<input class='search text' name='search' type='text'/>"
-      end
-    end
+    javascript "var #{var} = new LiveSearch('#{search_id}', {url: '#{url}', replace: '#{replace}'})" if url && replace
   end
   
   def method_missing(method, *args, &block)

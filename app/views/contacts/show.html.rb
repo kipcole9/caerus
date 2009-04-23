@@ -1,4 +1,4 @@
-panel @contact.full_name_and_title do
+panel @contact.full_name_and_title, :flash => true do
   block do
     tab "contact_#{@contact['id']}" do
       tab_item "Add a Note" do
@@ -11,5 +11,12 @@ panel @contact.full_name_and_title do
         store "Dates"
       end
     end
+  end
+end
+
+panel @contact.full_name_and_title + " recent history" do
+  block do
+    @histories = @contact.actions
+    store render :file => 'histories/index'
   end
 end

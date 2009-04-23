@@ -3,15 +3,11 @@
 
 // Attach common behaviours
 
-// Elements with a class of 'toggle'
-// When these elements are clicked, and element with the same ID as the click targed
-// with '-toggle' appended is toggled.
-// ie. an <div class="toggle" id="click"></div> when clicked will toggle id="click-toggle"
 Event.addBehavior({
-  '.toggle:click' : function(e) {
-    	var target = this.id + "-toggle";
-		$(target).toggle();
-    	e.stop();
+  '.box h2 a:click' : function(e) {
+		e.stop();
+    	var target = this.up('.box').down('.block')
+		Effect.toggle($(target), 'blind', {duration: 0.5});
   	}
 });
 
@@ -122,10 +118,46 @@ Event.addBehavior({
 	}	
 });
 
+// Show/hide optional fields
+Event.addBehavior({
+	'span.showOptional input[type="checkbox"]:click' : function(e) {
+		fieldset = this.up().next();
+		optionalFields = fieldset.select('.optional');
+		if (this.checked) {
+			optionalFields.each(function(e, n) {
+				e.show();
+			});
+		} else {
+			optionalFields.each(function(e, n) {
+				e.hide();
+			});			
+		}
+	}
+});
+
+// Show optional fields if requested at load time
+Event.addBehavior({
+	'span.showOptional input[type="checkbox"]' : function(e) {
+		fieldset = this.up().next();
+		optionalFields = fieldset.select('.optional');
+		if (this.checked) {
+			optionalFields.each(function(e, n) {
+				e.show();
+			});
+		}
+	}
+});
+
+// For the use pick list
+Event.addBehavior({
+	'.user' : function(e) {
+		new Draggable(this, {ghosting: true, revert: true});
+	}
+})
+
 Event.addBehavior({
 	'body' : function(e) { 
 		// Get browser timezone
-		// Cookie.set("tzoffset", (new Date()).getTimezoneOffset());
 		Cookie.set("tzoffset", calculate_time_zone());
 		
 		// Set form focus
@@ -139,18 +171,6 @@ Event.addBehavior({
 		setupValidations();
 		reorderInlineFieldMessages();
 	}
-});
-
-// Resizing for contact cards on Contacts index page
-Event.observe(document.onresize ? document : window, "resize", function() {
-	if (contacts = $('contactCards')) {
-		console.log('Width is ' + contacts.getWidth());
-		new_width = (contacts.getWidth() - 20) / 3;
-		console.log('Setting widths to ' + new_width);
-		$$('.contactCard').each(function(e) {
-			e.setStyle({width: new_width});
-		});
-	} 
 });
 
 // When a form is "inline" we want the field message (used for validation)

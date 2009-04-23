@@ -6,6 +6,11 @@ class AccountsController < ApplicationController
     @user = @account.users.new
   end
   
+  # New account creation creates:
+  # => Account
+  # => Account admin user
+  # => The account main "team"
+  # => Contact record for the admin user
   def create
     @account = Account.create(params[:account])
     @user = User.create(params[:user])

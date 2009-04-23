@@ -24,6 +24,7 @@ Rails::Initializer.run do |config|
   config.gem 'mislav-will_paginate', :lib => 'will_paginate', :source => 'http://gems.github.com'
   config.gem "gravtastic"
   config.gem "vpim"
+  config.gem "ruby-openid", :version => ">= 2.0", :lib => 'openid'
 
   # Only load the plugins named here, in the order given (default is alphabetical).
   # :all can be used as a placeholder for all plugins not explicitly named

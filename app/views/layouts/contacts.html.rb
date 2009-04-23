@@ -1,4 +1,4 @@
-keep :content do
+page do
   clear do
     column :width => 8 do
       store yield
@@ -11,4 +11,3 @@ keep :content do
   	end
   end
 end
-store render(:file => 'layouts/application')

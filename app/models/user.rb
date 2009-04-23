@@ -7,6 +7,12 @@ class User < ActiveRecord::Base
   
   VALID_USER_NAME            = /\A[^[:cntrl:]\\<>\/&]+\z/ 
   belongs_to                :account
+  belongs_to                :contact
+  has_many                  :team_members
+  has_many                  :teams, :through => :team_members
+  has_many                  :group_members
+  has_many                  :users, :through => :group_members
+  
   has_many                  :histories, :class_name => "History", :foreign_key => :created_by
 
   validates_presence_of     :login
@@ -47,7 +53,11 @@ class User < ActiveRecord::Base
   def email=(value)
     write_attribute :email, (value ? value.downcase : nil)
   end
-
+  
+  def name
+    [self.first_name, self.last_name].compact.join(' ')
+  end
+  
 protected
     
 private

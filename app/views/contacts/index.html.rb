@@ -1,8 +1,8 @@
 panel 'panels.contacts_index' do
-  block :id => :contactSearch, :class => :search do
-    search "Enter the name of the person you're looking for:", :replace => :contactCards
-  end
-  block :id => :contactCards do
-    store render 'contacts'
+  block do
+    search t(".name_search"), :id => :contactSearch, :search_id => :contactSearchField, :replace => :contactCards, :url => contacts_url
+    with_tag(:div, :id => :contactCards) do
+      store render 'contacts'
+    end
   end
 end

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090413020817) do
+ActiveRecord::Schema.define(:version => 20090421224844) do
 
   create_table "accounts", :force => true do |t|
     t.string  "name"
@@ -57,14 +57,6 @@ ActiveRecord::Schema.define(:version => 20090413020817) do
     t.datetime "updated_at"
   end
 
-  create_table "bounces", :id => false, :force => true do |t|
-    t.integer  "site_id"
-    t.string   "url"
-    t.string   "visitor",    :limit => 20
-    t.string   "session",    :limit => 20
-    t.datetime "tracked_at"
-  end
-
   create_table "campaigns", :force => true do |t|
     t.integer  "site_id"
     t.string   "name"
@@ -75,16 +67,6 @@ ActiveRecord::Schema.define(:version => 20090413020817) do
     t.datetime "updated_at"
   end
 
-  create_table "clicked_emails", :id => false, :force => true do |t|
-    t.integer  "site_id"
-    t.integer  "count",         :limit => 8,  :default => 0, :null => false
-    t.string   "campaign_name"
-    t.string   "ip_address",    :limit => 20
-    t.string   "country",       :limit => 20
-    t.string   "locality",      :limit => 20
-    t.datetime "tracked_at"
-  end
-
   create_table "clicks", :force => true do |t|
     t.integer  "campaign_id"
     t.integer  "responder_id"
@@ -93,14 +75,6 @@ ActiveRecord::Schema.define(:version => 20090413020817) do
     t.string   "location"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "clicks_through", :id => false, :force => true do |t|
-    t.integer  "site_id"
-    t.string   "visitor",    :limit => 20
-    t.string   "session",    :limit => 20
-    t.string   "url"
-    t.datetime "tracked_at"
   end
 
   create_table "comments", :force => true do |t|
@@ -121,11 +95,7 @@ ActiveRecord::Schema.define(:version => 20090413020817) do
     t.string   "given_name"
     t.string   "family_name"
     t.string   "salutation",         :limit => 30
-    t.string   "prefix",             :limit => 20
-    t.string   "suffix",             :limit => 20
     t.string   "nickname",           :limit => 20
-    t.string   "greeting",           :limit => 20
-    t.string   "address_as",         :limit => 50
     t.string   "name",               :limit => 100
     t.string   "locale",             :limit => 50
     t.string   "timezone",           :limit => 50
@@ -133,13 +103,22 @@ ActiveRecord::Schema.define(:version => 20090413020817) do
     t.datetime "updated_at"
     t.integer  "account_id"
     t.string   "role"
-    t.string   "organization"
     t.string   "profile"
     t.string   "photo_file_name"
     t.string   "photo_content_type"
     t.integer  "photo_file_size"
     t.integer  "created_by"
     t.integer  "updated_by"
+    t.integer  "organization_id"
+    t.string   "gender",             :limit => 10,  :default => "unknown"
+    t.string   "role_function",      :limit => 50
+    t.string   "role_level",         :limit => 50
+    t.string   "name_order",         :limit => 2
+    t.string   "honorific_prefix",   :limit => 50
+    t.string   "honorific_suffix",   :limit => 50
+    t.string   "type"
+    t.integer  "employees"
+    t.integer  "revenue"
   end
 
   add_index "contacts", ["family_name"], :name => "index_contacts_on_family_name"
@@ -165,15 +144,24 @@ ActiveRecord::Schema.define(:version => 20090413020817) do
 
   add_index "emails", ["contact_id"], :name => "index_emails_on_contact_id"
 
-  create_table "entry_pages", :id => false, :force => true do |t|
-    t.integer  "site_id"
-    t.string   "url"
-    t.datetime "tracked_at"
-  end
-
   create_table "files", :force => true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "group_members", :force => true do |t|
+    t.integer  "group_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "groups", :force => true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "account_id"
   end
 
   create_table "histories", :force => true do |t|
@@ -196,12 +184,6 @@ ActiveRecord::Schema.define(:version => 20090413020817) do
 
   add_index "instant_messengers", ["contact_id"], :name => "index_instant_messengers_on_contact_id"
 
-  create_table "landing_pages", :id => false, :force => true do |t|
-    t.integer  "site_id"
-    t.string   "url"
-    t.datetime "tracked_at"
-  end
-
   create_table "logged_exceptions", :force => true do |t|
     t.string   "exception_class"
     t.string   "controller_name"
@@ -220,12 +202,6 @@ ActiveRecord::Schema.define(:version => 20090413020817) do
     t.string   "status"
   end
 
-  create_table "new_visitors", :id => false, :force => true do |t|
-    t.integer  "site_id"
-    t.string   "visitor",    :limit => 20
-    t.datetime "tracked_at"
-  end
-
   create_table "notes", :force => true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -237,46 +213,15 @@ ActiveRecord::Schema.define(:version => 20090413020817) do
     t.date     "related_date"
   end
 
-  create_table "opened_emails", :id => false, :force => true do |t|
-    t.integer  "site_id"
-    t.integer  "count",         :limit => 8,  :default => 0, :null => false
-    t.string   "campaign_name"
-    t.string   "ip_address",    :limit => 20
-    t.string   "country",       :limit => 20
-    t.string   "locality",      :limit => 20
-    t.datetime "tracked_at"
-  end
-
-  create_table "organizations", :force => true do |t|
-    t.string   "name"
-    t.string   "division"
-    t.string   "department"
+  create_table "people", :force => true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "page_views", :force => true do |t|
-    t.integer  "site_id"
-    t.integer  "views",      :limit => 8,  :default => 0, :null => false
-    t.string   "url"
-    t.string   "country",    :limit => 20
-    t.string   "locality",   :limit => 20
-    t.string   "ip_address", :limit => 20
-    t.datetime "tracked_at"
-  end
-
-  create_table "page_views_per_visit", :id => false, :force => true do |t|
-    t.integer  "site_id"
-    t.integer  "views",      :limit => 8,  :default => 0, :null => false
-    t.string   "visitor",    :limit => 20
-    t.string   "session",    :limit => 20
-    t.datetime "tracked_at"
   end
 
   create_table "phones", :force => true do |t|
     t.integer  "contact_id"
     t.string   "kind",       :limit => 10
-    t.string   "number",     :limit => 20
+    t.string   "number",     :limit => 50
     t.boolean  "preferred",                :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -296,19 +241,6 @@ ActiveRecord::Schema.define(:version => 20090413020817) do
   create_table "reminders", :force => true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "repeat_visitors", :id => false, :force => true do |t|
-    t.integer  "site_id"
-    t.integer  "count",      :limit => 8,  :default => 0, :null => false
-    t.string   "visitor",    :limit => 20
-    t.datetime "tracked_at"
-  end
-
-  create_table "return_visitors", :id => false, :force => true do |t|
-    t.integer  "site_id"
-    t.string   "visitor",    :limit => 20
-    t.datetime "tracked_at"
   end
 
   create_table "sites", :force => true do |t|
@@ -337,6 +269,26 @@ ActiveRecord::Schema.define(:version => 20090413020817) do
   end
 
   create_table "tasks", :force => true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "team_members", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "team_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "teams", :force => true do |t|
+    t.integer  "account_id"
+    t.string   "name"
+    t.text     "description"
+    t.integer  "lft"
+    t.integer  "rgt"
+    t.integer  "parent_id"
+    t.integer  "created_by"
+    t.integer  "updated_by"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -406,32 +358,10 @@ ActiveRecord::Schema.define(:version => 20090413020817) do
     t.string   "ip_address",                :limit => 50
     t.integer  "created_by"
     t.integer  "updated_by"
+    t.integer  "contact_id"
   end
 
   add_index "users", ["login"], :name => "index_users_on_login", :unique => true
-
-  create_table "visit_duration", :id => false, :force => true do |t|
-    t.integer  "site_id"
-    t.integer  "duration",   :limit => 8
-    t.string   "visitor",    :limit => 20
-    t.string   "session",    :limit => 20
-    t.datetime "tracked_at"
-  end
-
-  create_table "visitors", :id => false, :force => true do |t|
-    t.integer  "site_id"
-    t.integer  "count",      :limit => 8,  :default => 0, :null => false
-    t.string   "visitor",    :limit => 20
-    t.datetime "tracked_at"
-  end
-
-  create_table "visits", :id => false, :force => true do |t|
-    t.integer  "site_id"
-    t.integer  "visits",     :limit => 8,  :default => 0, :null => false
-    t.string   "visitor",    :limit => 20
-    t.string   "session",    :limit => 20
-    t.datetime "tracked_at"
-  end
 
   create_table "websites", :force => true do |t|
     t.integer  "contact_id"

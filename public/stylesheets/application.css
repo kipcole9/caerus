@@ -1,3 +1,10 @@
+/* Colors for emphasis
+	Light yellow: #FAF8CC
+	Light cyan: #CFECEC
+	Light green (for flash) #bfb
+	Light red (flash error) #fbb
+*/	
+
 body {
 	padding-bottom 0;
 }
@@ -6,6 +13,39 @@ input[type="text"] {
 	line-height: 1em;
 	padding-top: 3px;
 	padding-bottom: 3px;
+}
+
+
+/* Default rendering of select in safari doesn't allow font-size
+ * using a border turns off using native widgets and we can style 
+ * some more.
+ * Thanks to http://particletree.com/notebook/design-friendly-select-elements-in-safari-3/
+ */
+select {
+	height: 22px;
+	border: 1px solid #999;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	font-size: 100%;
+}
+
+h4 {
+	font-size: 110%;
+}
+
+h4 + p {
+	margin-top: -5px;
+}
+
+
+/* Thanks to http://camendesign.com/code/uth6_beautiful_css_dates */
+:focus {
+	/* Webkit */
+	outline: auto 5px -webkit-focus-ring-color; 
+	outline-offset: -2px;
+	/* Gecko 
+	-moz-outline: -moz-mac-focusring solid 2px; 
+	-moz-outline-offset: 0; */
 }
 
 /* Specific css for things out of the normal template flow */
@@ -89,13 +129,15 @@ div.flash_error {
 /* The field error message from validations */
 span.field_message {
 	margin-left: 3px;
-	color: #f00;
+	color: #fbb;
 }
 
 /* Field prompts under the input field */
 p.prompt {
 	margin-top: 0.2em;
 	margin-left: 1px;
+	margin-bottom: 0;
+	font-size: 90%;
 	line-height: 1.1em;
 }
 
@@ -150,6 +192,49 @@ input[type="file"] {
 	padding: 0;
 }
 
+/* Tags */
+ul.tags {
+	position: relative;
+	list-style: none;
+	margin: 0;
+}
+
+ul.tags li.tag {
+	display: inline-block;
+    list-style: none;
+	margin: 0 0 0 0;
+	padding: 1px 5px;
+	background-color: #CFECEC;
+	border: 1px solid #aaa;
+	-webkit-border-radius: 	 5px;  
+  	-moz-border-radius:	5px;
+}
+
+ul.tags li.tag img {
+	position: relative;
+	top: 2px;
+}
+
+ul.tags li.tag a {
+	font-weight: normal;
+}
+
+/* Link for the "show more fields" option */
+span.showOptional {
+	position: absolute;
+	font-weight: normal;
+	line-height: 1em;
+	right: 8px;
+	top: 17px;
+	z-index: 10;
+	color: #999;
+}
+
+span.showOptional input[type="checkbox"] {
+	margin: 0 0 0 3px;
+}
+
+/* Field spacing on forms */
 div.field + div.field {
 	margin-top: 0.3em;
 }
@@ -308,20 +393,17 @@ div.address._new {
 
 /* Contact card display */
 #contactCards {
-	margin-left: 0px;
-	margin-right: -5px;
+	width: 100%;
 }
 
 div.contactCard {
 	position: relative;
 	float: left;
-	width: 30.6%; 
+	width: 30.5%; 
 	height: 130px;
 	background-color: white;
 	margin-bottom: 10px;
-	margin-right: 5px;
-	margin-left: 0px;
-	margin-top: 5px;
+	margin-right: 1%;
 	padding: 5px;
 	-webkit-box-shadow: 5px 5px 3px #888;
 	-moz-box-shadow: 5px 5px 3px #888;
@@ -412,11 +494,110 @@ div.contactCard p.email a, div.contactCard p.website a {
 }
 
 /* Search */
-div.search {
-	margin-top: 10px;
-	margin-bottom: -10px;
+form.search  {
+	margin-bottom: 5px;
+	margin-top: -5px;
+	padding: 6px 8px;
+	background-color: #ccc;
+	-webkit-border-radius: 	 5px;  
+  	-moz-border-radius:	5px;	
 }
 
-div.search form {
-	padding-bottom: 0;
+form.search input[type="text"], form.search input[type="search"] {
+	display: inline-block;
+	width: 70%;	
+}
+
+form.search label {
+	display: inline-block;
+	font-weight: bold;
+	margin-right: 5px;
+	font-size: 110%;
+}
+
+/* Teams tree view; Groups list view */
+ul#team {
+	width: 100%;
+	margin: 0 auto;
+	overflow-x: hidden;
+}
+
+ul#team ul.teams, ul#team li.team_member, ul#team li.root, ul#group li.groupMember {
+	position: relative;
+    list-style: none;
+    margin: 0 0 0 0;
+	margin-right: 2px;
+    padding: 0;
+	padding-left: 10px;
+}
+
+ul#team li.root, ul#group li.groupMember {
+	padding: 0;
+}
+
+/* Actual team data is displayed in .team */
+div.team, div.group {
+	margin-top: 5px;
+	padding-bottom: 10px;
+	font-size: 110%;
+	width: 100%;
+}
+
+div.team:hover {
+	cursor: move;
+}
+
+div.team h4, div.group h4, form#new_group, form#new_team {
+	border-top: 1px dotted black;
+	padding-top: 5px;
+	margin-bottom: 0.5em;
+}
+
+div.team div.buttons, div.group div.buttons {
+	position: absolute;
+	top: 6px;
+	right: 0;
+}
+
+div.team.hover, div.group.hover {
+	background-color: #FAF8CC;  /* light yellow */
+}
+
+div.team p, div.group p {
+	line-height: 1.2em;
+	margin-bottom: 0.5em;
+}
+
+div.team img, div.group img {
+	width: 13px;
+	height: 13px;
+}
+div.team img:hover, div.group img:hover {
+	cursor: pointer;
+}
+
+div.team .tags, div.group .tags {
+
+}
+
+div.user {
+	border: 1px solid #aaa;
+	background-color: #eee;
+	padding: 5px;
+	-webkit-border-radius: 	 5px;  
+  	-moz-border-radius:	5px;
+	margin: 0 0 5px 0;
+}
+
+div.user:hover {
+	cursor: move;
+}
+
+div.user p {
+	margin-bottom: 0;
+}
+
+div.user img {
+	float: left;
+	margin-right: 5px;
 }

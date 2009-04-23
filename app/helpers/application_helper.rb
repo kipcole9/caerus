@@ -32,13 +32,14 @@ module ApplicationHelper
     @template.concat @template.content_tag(:dt, tt(heading), default_dd_options)
     @template.concat @template.content_tag(:dd, @template.capture(&block), default_dd_options.merge(options))    
   end
-  
-  def fieldset(legend = nil, options = {}, &block)
+
+  def fieldset(legend = '', options = {}, &block)
     default_options = {}
-    @template.concat @template.content_tag(:fieldset, 
-      @template.content_tag(:legend, (legend ? tt(legend) : "") + buttons_from(options)) + @template.capture(&block), 
-      default_options.merge(options)
-    )    
+    legend    = @template.content_tag(:legend, legend + buttons_from(options)) unless legend.blank?
+    optional  = optional_field_from(options)
+    content   = @template.capture(&block)
+    fieldset  = @template.content_tag(:fieldset, legend + content, default_options.merge(options))    
+    @template.concat @template.content_tag(:div, "#{optional}#{fieldset}")
   end
   
   # Marks up a form title
@@ -150,20 +151,20 @@ module ApplicationHelper
   def generate_html(form_builder, method, options = {})
     options[:object] ||= form_builder.object.class.reflect_on_association(method).klass.new
     options[:partial] ||= method.to_s.singularize
-    options[:form_builder_local] ||= :f  
+    options[:form_builder_local] ||= options[:partial].to_sym  
  
     form_builder.fields_for(method, options[:object], :child_index => 'NEW_RECORD') do |f|
       render(:partial => options[:partial], :locals => { options[:form_builder_local] => f })
     end
- 
   end
  
   def generate_template(form_builder, method, options = {})
     escape_javascript generate_html(form_builder, method, options = {})
   end
   
-  def render_form(form_builder, partial)
-    render(:partial => partial, :locals => { :f => form_builder })
+  def render_form(form_builder, partial, options = {})
+    options[:form_builder_local] ||= partial.to_sym
+    render :partial => partial, :locals => {options[:form_builder_local] => form_builder}
   end
   
   def javascript(content)
@@ -175,11 +176,30 @@ module ApplicationHelper
     "var #{association.to_s.singularize}='#{template}';"
   end
   
+  def form_template_for(partial)
+    form = render :partial => partial.to_s
+    "var #{partial} = '#{escape_javascript form}';"
+  end
+  
   def buttons(buttons)
     store buttons_from(:buttons => buttons)
   end
   
 private
+  def optional_field_from(options)
+    if optional = options.delete(:optional)
+      message   = tt('show_all_fields')
+      check_box = check_box_tag(random_id, "1", (optional == :show))
+      @template.content_tag(:span, "#{message}#{check_box}", :class => 'showOptional')
+    else
+      ''
+    end
+  end
+  
+  def random_id
+    "i#{Time.now.to_i}"
+  end
+  
   def buttons_from(options)
     buttons = options.delete(:buttons)
     return '' unless buttons

@@ -7,13 +7,13 @@ class ContactsController < ApplicationController
   end
 
   def create
-    @contact = Person.new(params[:contact])
+    @contact = Person.new(params[:person] || params[:organization])
     @contact.created_by = current_user
     @contact.save ? redirect_to(contact_path(@contact)) : render(:action => :edit)
   end
 
   def update
-    @contact.attributes = params[:contact]
+    @contact.attributes = params[:person] || params[:organization]
     @contact.updated_by = current_user
     if @contact.save
       flash[:notice] =  "Contact updated sucessfully."
@@ -21,6 +21,13 @@ class ContactsController < ApplicationController
     else
       flash.now[:error] =  "Contact could not be updated."
       render :edit
+    end
+  end
+  
+  def index
+    respond_to do |format|
+      format.js { render :partial => 'contacts' }
+      format.html
     end
   end
   
@@ -39,7 +46,7 @@ private
     conditions = []
     names = search.split(' ').map(&:strip)
     names.each do |name|
-      conditions << "given_name LIKE '%#{quote_string(name)}%' OR family_name LIKE '#{quote_string(name)}'" unless name.blank?
+      conditions << "given_name LIKE '%#{quote_string(name)}%' OR family_name LIKE '%#{quote_string(name)}%' or name LIKE '%#{quote_string(name)}%'" unless name.blank?
     end
     conditions.join(' OR ')
   end

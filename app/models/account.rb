@@ -2,6 +2,8 @@ class Account < ActiveRecord::Base
   has_many                  :users
   has_many                  :contacts
   has_many                  :sites
+  has_many                  :teams
+  has_many                  :groups, :order => "name"
   
   composed_of               :calendar, :class_name => "CalendarProxy",
                             :mapping  => CalendarProxy::COMPOSED_OF_MAPPING

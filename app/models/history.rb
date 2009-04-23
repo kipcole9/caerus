@@ -3,6 +3,7 @@ class History < ActiveRecord::Base
   belongs_to    :actionable, :polymorphic => true
   belongs_to    :created_by, :class_name => "User", :foreign_key => :created_by
   serialize     :updates
+  default_scope :order => "created_at DESC"
   
   def self.record(record, transaction)
     return nil if transaction == :update && record.changes.blank?

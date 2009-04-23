@@ -1,4 +1,52 @@
 == Welcome to Caerus
 
-One day this will be an analytics platform.  Right now it's just
-some very early code of no practical use.
+Contact Manager TODO
+
+PageGlimpse dev key
+	f5cf207ff3e0fb27e8dbb0457caff622
+
+Model
+	DONE New attributes: gender
+	Add events (dates) section and categories
+	Add affiliations section and categories
+	DONE Provide for name order
+	DONE Add suffix and prefix honorifics
+	Add preferred greeting method (for addressing)
+	Add X-ABUID to contact (for matching with Apple Directory)
+		- Change this to "Other System Identifier"
+	
+Controller
+	Import of vcard
+	Import of csv (outlook test)
+	Date-based import/synch of vcard (how to detect dates in vcard?)
+	
+History
+	History display and tracking
+	Undo? Transactional imports/updates tracking?
+	
+Merging
+	Merging by d&d of cards
+	Export?
+	
+Groups
+	Defining and managing groups
+	
+Security/Scoping
+	How to define Account, User - is contact different?
+	Teams? Groups? 
+	Delegating accounts?
+	ACLs
+	
+Twitter
+	Follow twitterers if desired
+	Show recent tweets on contact page
+	Log tweets to contact page (as part of history)?
+	
+RSS
+	Show rss feeds of urls, subscribe
+	
+EMails
+	If using this email service, auto log as part of contact record
+	
+Determine interests/preferences by analysing history stream
+	

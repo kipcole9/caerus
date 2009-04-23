@@ -97,4 +97,12 @@ class ApplicationController < ActionController::Base
     request.env["HTTP_USER_AGENT"]
   end
 
+  def protect_against_forgery?
+    if request.xhr?
+      false
+    else
+      super
+    end
+  end
+
 end

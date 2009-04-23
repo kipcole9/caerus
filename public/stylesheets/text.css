@@ -8,7 +8,7 @@
 /* =Basic HTML
 --------------------------------------------------------------------------------*/
 
-body, textarea, input
+body, textarea, input, select
 {
 	font-size: 13px;
 	line-height: 1.5em; 
